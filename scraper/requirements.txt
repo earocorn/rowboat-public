@@ -1,0 +1,6 @@
+python-dotenv
+requests
+selenium
+bs4
+fastapi[standard]
+pyotp

@@ -1,0 +1,28 @@
+services:
+  chrome:
+    image: selenium/standalone-chromium:latest
+    shm_size: 2gb
+    ports:
+      - "4444:4444"
+  rowboat-backend:
+    build: rowboat-backend
+    environment:
+      DB_PATH: ${DB_PATH}
+      SCRAPER_SERVER: http://scraper:8000
+      PORT: 8080
+      GIN_MODE: release
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+    ports:
+      - "8080:8080"
+  scraper:
+    build: scraper
+    depends_on:
+      - chrome
+    environment:
+      BACKEND_SERVER: http://rowboat-backend:8080
+      WEBDRIVER_SERVER: http://chrome:4444
+      COSTCO_USER: ${COSTCO_USER}
+      COSTCO_PASS: ${COSTCO_PASS}
+      TOTP_SECRET: ${TOTP_SECRET}
+    ports:
+      - "8000:8000"
